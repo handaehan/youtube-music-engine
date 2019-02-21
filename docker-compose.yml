@@ -1,0 +1,30 @@
+version: '2'
+services:
+  mysql:
+    build:
+      context: ./.docker/mysql
+      args:
+        userid: $DOCKER_UID
+
+    volumes:
+      - .docker/mysql/db:/var/lib/mysql
+    env_file:
+      - .env
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  php:
+    build:
+      context: ./.docker/php
+      args:
+        userid: $DOCKER_UID
+    ports:
+      - '80:80'
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+volumes:
+  db:
